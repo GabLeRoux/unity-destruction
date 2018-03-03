@@ -59,11 +59,14 @@ public class Destruction : MonoBehaviour
 	Rigidbody _rigidbody;
 	Collider coll;
 	Rigidbody[] rigids;
+	MeshRenderer[] renderers;
 
 	void Start ()
 	{
 		//Get the rigidbodies
 		rigids = gameObject.GetComponentsInChildren<Rigidbody> ();
+		renderers = gameObject.GetComponentsInChildren<MeshRenderer> ();
+		SetRenderersEnabled (false);
 		coll = GetComponent<Collider> ();
 		_rigidbody = GetComponent<Rigidbody> ();
 
@@ -75,6 +78,14 @@ public class Destruction : MonoBehaviour
 		}
 		if (particlesOnBreak) {
 			SetupParticles ();
+		}
+	}
+
+	void SetRenderersEnabled(bool value)
+	{
+		for (int i = 1; i < renderers.Length; i++)
+		{
+			renderers [i].enabled = value;
 		}
 	}
 
@@ -138,13 +149,13 @@ public class Destruction : MonoBehaviour
 			Break ();
 		} else if (collision.relativeVelocity.magnitude / velocityToBreak > strength) {
 			//Otherwise, if velocity is strong enough to break some bits but not others...
-            
 			//Get the impact point
 			spherePoint = collision.contacts [0].point;
 			//Get the radius within which we'll break pieces
 			sphereRadius = collision.relativeVelocity.magnitude / velocityToBreak * breakageMultiplier;
             
 			//Turn on Colliders so that Physics.OverlapSphere will work
+			//Turn on Renderer for pieces
 			foreach (Rigidbody rigid in rigids) {
 				rigid.GetComponent<Collider> ().enabled = true;
 			}
@@ -167,7 +178,8 @@ public class Destruction : MonoBehaviour
 	public void Break ()
 	{
 		SetPiecesKinematic (false);
-
+		SetRenderersEnabled(true);
+		renderers [0].gameObject.SetActive (false);
 		//Play the sound
 		if (soundOnBreak) {
 			src.Play ();
