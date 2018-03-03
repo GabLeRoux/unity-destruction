@@ -56,7 +56,7 @@ public class Destruction : MonoBehaviour
 	Vector3 spherePoint = Vector3.zero;
 	float sphereRadius = 0f;
 
-	Rigidbody rigidbody;
+	Rigidbody _rigidbody;
 	Collider coll;
 	Rigidbody[] rigids;
 
@@ -65,7 +65,7 @@ public class Destruction : MonoBehaviour
 		//Get the rigidbodies
 		rigids = gameObject.GetComponentsInChildren<Rigidbody> ();
 		coll = GetComponent<Collider> ();
-		rigidbody = GetComponent<Rigidbody> ();
+		_rigidbody = GetComponent<Rigidbody> ();
 
 		together = !startBroken;
 		SetPiecesKinematic (together);
@@ -185,7 +185,7 @@ public class Destruction : MonoBehaviour
 			rigid.GetComponent<Collider> ().enabled = !valueIn;
 		}
 		coll.enabled = valueIn;
-		rigidbody.isKinematic = !valueIn;
+		_rigidbody.isKinematic = !valueIn;
 	}
 
 	public void BreakWithExplosiveForce (float force, float radius = 3)
